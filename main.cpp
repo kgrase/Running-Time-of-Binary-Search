@@ -12,6 +12,7 @@ Objective:  To analyze the running time for the recursive and iterative versions
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <ctime>
 
 /*
     Performs a recursive binary search on a sorted vector.
@@ -103,7 +104,16 @@ int sequentialSearch(const std::vector<int>& vec, int target) {
 }
 
 int main(void) {
-    std::vector<int> vec = {54, 23, 67, 12, 88, 92, 47, 9, 35, 64};
+    std::srand(std::time(0)); // Seed the random number generator
+
+    // Create a vector and fill it with random numbers between 1 and 100
+    std::vector<int> vec;
+    int vec_length = 50;  // Set the vector size to 20
+
+    for (int i = 0; i < vec_length; ++i) {
+        int number = std::rand() % 100 + 1;  // Get a random number in the range 1-100
+        vec.push_back(number);
+    }
 
     // Sort the vector in ascending order
     std::sort(vec.begin(), vec.end());
@@ -115,34 +125,34 @@ int main(void) {
     }
     std::cout << std::endl;
 
-    int target1 = 23;   // Item that is in the list
-    int target2 = 10;   // Item that is not in the list
+    // Generate a random target value between 1 and 100
+    int target = std::rand() % 100 + 1;
     
     // Recursive Binary Search
     std::cout << "Recursive Binary Search" << std::endl;
-    int index = recursiveBinarySearch(vec, target1, 0, vec.size() - 1); // target1
-    std::cout << target1 << " found at index: " << index << std::endl;
-
-    index = recursiveBinarySearch(vec, target2, 0, vec.size() - 1); // target2
-    std::cout << target2 << " was not found, return value is: " << index << std::endl;
+    int index = recursiveBinarySearch(vec, target, 0, vec.size() - 1);
+    if (index != -1)
+        std::cout << target << " found at index: " << index << std::endl;
+    else
+        std::cout << target << " was not found, return value is: " << index << std::endl;
     std::cout << std::endl;
 
     // Iterative Binary Search
     std::cout << "Iterative Binary Search" << std::endl;
-    index = nonRecursiveBinarySearch(vec, target1); // target1
-    std::cout << target1 << " found at index: " << index << std::endl;
-
-    index = nonRecursiveBinarySearch(vec, target2); // target2
-    std::cout << target2 << " was not found, return value is: " << index << std::endl;
+    index = nonRecursiveBinarySearch(vec, target);
+    if (index != -1)
+        std::cout << target << " found at index: " << index << std::endl;
+    else
+        std::cout << target << " was not found, return value is: " << index << std::endl;
     std::cout << std::endl;
 
     // // Sequential Search
     std::cout << "Sequential Search" << std::endl;
-    index = sequentialSearch(vec, target1); // target1
-    std::cout << target1 << " found at index: " << index << std::endl;
-
-    index = sequentialSearch(vec, target2); // target2
-    std::cout << target2 << " was not found, return value is: " << index << std::endl;
+    index = sequentialSearch(vec, target);
+    if (index != -1)
+        std::cout << target << " found at index: " << index << std::endl;
+    else
+        std::cout << target << " was not found, return value is: " << index << std::endl;
     std::cout << std::endl;
 
     return 0;
