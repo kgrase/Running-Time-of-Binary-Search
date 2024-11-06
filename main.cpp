@@ -13,6 +13,7 @@ Objective:  To analyze the running time for the recursive and iterative versions
 #include <algorithm>
 #include <iostream>
 #include <ctime>
+#include <chrono>
 
 /*
     Performs a recursive binary search on a sorted vector.
@@ -104,56 +105,69 @@ int sequentialSearch(const std::vector<int>& vec, int target) {
 }
 
 int main(void) {
-    std::srand(std::time(0)); // Seed the random number generator
+    int N = 1000000;        // Vector size
+    double SumRBS = 0.0;    // Accumulator variable for Recursive Binary Search
+    double SumIBS = 0.0;    // Accumulator variable for Iterative Binary Search
+    double SumSeqS = 0.0;   // Accumulator variable for Sequential search
 
-    // Create a vector and fill it with random numbers between 1 and 100
-    std::vector<int> vec;
-    int vec_length = 50;  // Set the vector size to 20
+    for (int rep = 0; rep < 10; ++rep) {
 
-    for (int i = 0; i < vec_length; ++i) {
-        int number = std::rand() % 100 + 1;  // Get a random number in the range 1-100
-        vec.push_back(number);
+        std::srand(std::time(0)); // Seed the random number generator
+
+        // Create a vector and fill it with random numbers between 1 and 100
+        std::vector<int> vec;
+        int vec_length = N;  // Set the vector size to 20
+
+        for (int i = 0; i < vec_length; ++i) {
+            int number = std::rand() % 100 + 1;  // Get a random number in the range 1-100
+            vec.push_back(number);
+        }
+
+        // Sort the vector in ascending order
+        std::sort(vec.begin(), vec.end());
+
+        // Generate a random target value between 1 and 100
+        int target = std::rand() % 100 + 1;
+
+        // Recursive Binary Search
+        auto start = std::chrono::high_resolution_clock::now();
+        recursiveBinarySearch(vec, target, 0, vec.size() - 1);
+        auto end = std::chrono::high_resolution_clock::now();
+
+        // Calculate the duration and add it to SumRBS
+        std::chrono::duration<double> duration = end - start;
+        SumRBS += duration.count();
+
+        // Iterative Binary Search
+        start = std::chrono::high_resolution_clock::now();
+        nonRecursiveBinarySearch(vec, target);
+        end = std::chrono::high_resolution_clock::now();
+
+        // Calculate the duration and add it to SumIBS
+        duration = end - start;
+        SumIBS += duration.count();
+
+        // Sequential search
+        start = std::chrono::high_resolution_clock::now();
+        sequentialSearch(vec, target);
+        end = std::chrono::high_resolution_clock::now();
+
+        // Calculate the duration and add it to SumSeqS
+        duration = end - start;
+        SumSeqS += duration.count();
     }
 
-    // Sort the vector in ascending order
-    std::sort(vec.begin(), vec.end());
+    double avg_time_RBS_microseconds = (SumRBS / 10) * 1000000;
+    std::cout << "Average Running Time for Recursive Binary Search in microseconds is " 
+              << avg_time_RBS_microseconds << " microseconds.\n";
 
-    // Contents of vector
-    std::cout << "Contents of vector: ";
-    for (int num : vec) {
-        std::cout << num << " ";
-    }
-    std::cout << std::endl;
+    double avg_time_IBS_microseconds = (SumIBS / 10) * 1000000;
+    std::cout << "Average Running Time for Iterative Binary Search in microseconds is " 
+              << avg_time_IBS_microseconds << " microseconds.\n";
 
-    // Generate a random target value between 1 and 100
-    int target = std::rand() % 100 + 1;
-    
-    // Recursive Binary Search
-    std::cout << "Recursive Binary Search" << std::endl;
-    int index = recursiveBinarySearch(vec, target, 0, vec.size() - 1);
-    if (index != -1)
-        std::cout << target << " found at index: " << index << std::endl;
-    else
-        std::cout << target << " was not found, return value is: " << index << std::endl;
-    std::cout << std::endl;
-
-    // Iterative Binary Search
-    std::cout << "Iterative Binary Search" << std::endl;
-    index = nonRecursiveBinarySearch(vec, target);
-    if (index != -1)
-        std::cout << target << " found at index: " << index << std::endl;
-    else
-        std::cout << target << " was not found, return value is: " << index << std::endl;
-    std::cout << std::endl;
-
-    // // Sequential Search
-    std::cout << "Sequential Search" << std::endl;
-    index = sequentialSearch(vec, target);
-    if (index != -1)
-        std::cout << target << " found at index: " << index << std::endl;
-    else
-        std::cout << target << " was not found, return value is: " << index << std::endl;
-    std::cout << std::endl;
+    double avg_time_Seqs_microseconds = (SumSeqS / 10) * 1000000;
+    std::cout << "Average Running Time for Sequential search in microseconds is " 
+              << avg_time_Seqs_microseconds << " microseconds.\n";
 
     return 0;
 }
