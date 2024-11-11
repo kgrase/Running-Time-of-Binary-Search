@@ -1,12 +1,6 @@
 /*
-================================================================================================================
+ To analyze the running time for the recursive and iterative versions of the binary search algorithm.
 
-Author:     kgrase
-Email:      kg73499@email.vccs.edu
-Title:      Analyze Running Time of Binary Search
-Objective:  To analyze the running time for the recursive and iterative versions of the binary search algorithm.
-
-================================================================================================================
 */
 
 #include <vector>
